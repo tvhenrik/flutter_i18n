@@ -1,7 +1,7 @@
 library flutter_i18n;
 
 import 'dart:async';
-
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/message_printer.dart';
 
@@ -26,7 +26,8 @@ class FlutterI18nDelegate extends LocalizationsDelegate<FlutterI18n> {
   }
 
   @override
-  Future<FlutterI18n> load(final Locale locale) async {
+  Future<FlutterI18n> load(Locale locale) async {
+    locale = window.locale;
     MessagePrinter.info("New locale: $locale");
     if (FlutterI18nDelegate._currentTranslationObject == null ||
         FlutterI18nDelegate._currentTranslationObject.locale != locale) {
