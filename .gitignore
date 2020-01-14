@@ -62,3 +62,14 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+# Flutter/Dart
+.DS_Store
+.dart_tool/
+
+.packages
+.pub/
+
+build/
+
+.flutter-plugins

@@ -9,9 +9,15 @@ import 'package:yaml/yaml.dart';
 
 import 'message_printer.dart';
 
+enum FileNameMode {
+  Default,
+  OnlyLanguageCode,
+  OnlyCountryCode,
+}
+
 class FlutterI18n {
   static RegExp _parameterRegexp = new RegExp("{(.+)}");
-  final bool _useCountryCode;
+  final FileNameMode _fileNameMode;
   final String _fallbackFile;
   final String _basePath;
   Locale forcedLocale;
@@ -20,7 +26,7 @@ class FlutterI18n {
 
   Map<dynamic, dynamic> decodedMap;
 
-  FlutterI18n(this._useCountryCode,
+  FlutterI18n(this._fileNameMode,
       [this._fallbackFile, this._basePath, this.forcedLocale]);
 
   Future<bool> load() async {
@@ -53,7 +59,8 @@ class FlutterI18n {
       await _decodeFile(fileName, 'json', json.decode);
       MessagePrinter.info("JSON file loaded for $fileName");
     } on Error catch (_) {
-      MessagePrinter.debug("Unable to load JSON file for $fileName, I'm trying with YAML");
+      MessagePrinter.debug(
+          "Unable to load JSON file for $fileName, I'm trying with YAML");
       await _decodeFile(fileName, 'yaml', loadYaml);
     }
   }
@@ -178,13 +185,26 @@ class FlutterI18n {
   }
 
   String _composeFileName() {
-    return "${locale.languageCode}${_composeCountryCode()}";
+    return "${_composeLanguageCode()}${_composeCountryCode()}";
+  }
+
+  String _composeLanguageCode() {
+    String languageCode = "";
+    if (_fileNameMode != FileNameMode.OnlyCountryCode &&
+        locale.languageCode != null) {
+      languageCode = "${locale.languageCode}";
+    }
+    return languageCode;
   }
 
   String _composeCountryCode() {
     String countryCode = "";
-    if (_useCountryCode && locale.countryCode != null) {
-      countryCode = "_${locale.countryCode}";
+    if (_fileNameMode != FileNameMode.OnlyCountryCode) {
+      countryCode += "_";
+    }
+    if (_fileNameMode != FileNameMode.OnlyLanguageCode &&
+        locale.countryCode != null) {
+      countryCode += "${locale.countryCode}";
     }
     return countryCode;
   }

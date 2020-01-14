@@ -7,7 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future main() async {
   final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
-      useCountryCode: false,
+      fileNameMode: FileNameMode.Default,
       fallbackFile: 'en',
       path: 'assets/i18n',
       forcedLocale: new Locale('es'));
